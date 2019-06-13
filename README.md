@@ -6,6 +6,10 @@ This is the official source repository of the OPS4J Pax Exam project for
 release lines 2.x, 3.x, 4.x and 5.x.
 It's licensed under the Apache Software License 2.0 by the OPS4J community.
 
+## Custom Release
+
+Due to unavailabilty of ops4j snapshot repository we did a release of pax-exam
+
 ## Documentation
 
 * <http://team.ops4j.org/wiki/display/PAXEXAM4/Documentation>
