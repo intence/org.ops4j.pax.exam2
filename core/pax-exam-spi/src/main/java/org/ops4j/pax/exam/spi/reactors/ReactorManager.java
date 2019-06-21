@@ -17,37 +17,16 @@
  */
 package org.ops4j.pax.exam.spi.reactors;
 
-import static org.ops4j.pax.exam.Constants.EXAM_REACTOR_STRATEGY_KEY;
-import static org.ops4j.pax.exam.Constants.EXAM_REACTOR_STRATEGY_PER_CLASS;
-import static org.ops4j.pax.exam.Constants.EXAM_REACTOR_STRATEGY_PER_METHOD;
-import static org.ops4j.pax.exam.Constants.EXAM_REACTOR_STRATEGY_PER_SUITE;
-import static org.ops4j.pax.exam.Constants.EXAM_SERVICE_TIMEOUT_DEFAULT;
-import static org.ops4j.pax.exam.Constants.EXAM_SERVICE_TIMEOUT_KEY;
-import static org.ops4j.pax.exam.Constants.EXAM_SYSTEM_CDI;
-import static org.ops4j.pax.exam.Constants.EXAM_SYSTEM_DEFAULT;
-import static org.ops4j.pax.exam.Constants.EXAM_SYSTEM_JAVAEE;
-import static org.ops4j.pax.exam.Constants.EXAM_SYSTEM_KEY;
-import static org.ops4j.pax.exam.Constants.EXAM_SYSTEM_TEST;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.ConfigurationManager;
-import org.ops4j.pax.exam.ExamConfigurationException;
-import org.ops4j.pax.exam.ExamSystem;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.ProbeBuilder;
-import org.ops4j.pax.exam.TestContainerException;
-import org.ops4j.pax.exam.TestProbeBuilder;
+import org.ops4j.pax.exam.*;
 import org.ops4j.pax.exam.options.SystemPropertyOption;
 import org.ops4j.pax.exam.options.WarProbeOption;
+import org.ops4j.pax.exam.options.extra.WorkingDirectoryOption;
 import org.ops4j.pax.exam.spi.DefaultExamReactor;
 import org.ops4j.pax.exam.spi.DefaultExamSystem;
 import org.ops4j.pax.exam.spi.ExamReactor;
@@ -59,6 +38,8 @@ import org.ops4j.pax.exam.util.InjectorFactory;
 import org.ops4j.spi.ServiceProviderFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.ops4j.pax.exam.Constants.*;
 
 /**
  * Manages the exam system and reactor required by a test driver. This class is a singleton and
@@ -196,18 +177,28 @@ public class ReactorManager {
     }
 
     private ExamSystem createExamSystem() throws IOException {
+        List<Option> options = new ArrayList<>();
         systemType = cm.getProperty(EXAM_SYSTEM_KEY, EXAM_SYSTEM_TEST);
         String timeout = cm.getProperty(EXAM_SERVICE_TIMEOUT_KEY, EXAM_SERVICE_TIMEOUT_DEFAULT);
         Option timeoutOption = new SystemPropertyOption(EXAM_SERVICE_TIMEOUT_KEY).value(timeout);
+
+        String workingDirectory = cm.getProperty(EXAM_OSGI_TMPDIR_KEY);
+        if(workingDirectory != null && !workingDirectory.isEmpty()) {
+            options.add(new WorkingDirectoryOption(workingDirectory));
+        }
+
         if (EXAM_SYSTEM_DEFAULT.equals(systemType)) {
-            system = DefaultExamSystem.create(new Option[] { timeoutOption });
+            options.add(timeoutOption);
+            system = DefaultExamSystem.create(options.toArray(new Option[0]));
         }
         else if (EXAM_SYSTEM_JAVAEE.equals(systemType)) {
             WarProbeOption warProbe = new WarProbeOption().classPathDefaultExcludes();
-            system = DefaultExamSystem.create(new Option[] { warProbe });
+            options.add(warProbe);
+            system = DefaultExamSystem.create(options.toArray(new Option[0]));
         }
         else {
-            system = PaxExamRuntime.createTestSystem(timeoutOption);
+            options.add(timeoutOption);
+            system = PaxExamRuntime.createTestSystem(options.toArray(new Option[0]));
         }
         return system;
     }

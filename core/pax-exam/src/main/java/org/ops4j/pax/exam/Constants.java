@@ -70,6 +70,9 @@ public class Constants {
     /** Configuration key for Exam system type. */
     public static final String EXAM_SYSTEM_KEY = "pax.exam.system";
 
+    /** Configuration key for Exam system workspace. */
+    public static final String EXAM_OSGI_TMPDIR_KEY = "pax.exam.osgi.tmpdir";
+
     /**
      * URL of configuration properties, overriding the default classpath:/exam.properties. If you
      * want this to be a plain old file, make sure to include the {@code file:} protocol.
