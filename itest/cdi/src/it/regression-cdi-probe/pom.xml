@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.ops4j.pax.exam.itest</groupId>
         <artifactId>exam-itest-cdi</artifactId>
-        <version>5.0.1-SNAPSHOT</version>
+        <version>5.0.1.INTENCE</version>
         <relativePath>../../..</relativePath>
     </parent>
 

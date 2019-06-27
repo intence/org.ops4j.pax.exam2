@@ -10,7 +10,7 @@
 
     <groupId>org.ops4j.pax</groupId>
     <artifactId>exam-reactor</artifactId>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.0.1.INTENCE</version>
     <packaging>pom</packaging>
 
     <name>OPS4J Pax Exam (Reactor POM)</name>
